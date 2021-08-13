@@ -48,9 +48,8 @@
  */
 
 define([
-    'jxg', 'math/geometry', 'math/math', 'math/statistics', 'base/coords', 'base/constants', 'utils/type', 'base/point', 'base/curve',
-    'base/transformation', 'element/composition'
-], function (JXG, Geometry, Mat, Statistics, Coords, Const, Type, Point, Curve, Transform, Compositions) {
+    'jxg', 'math/geometry', 'math/math', 'math/statistics', 'base/coords', 'base/constants', 'utils/type'
+], function (JXG, Geometry, Mat, Statistics, Coords, Const, Type) {
 
     "use strict";
 
@@ -147,7 +146,7 @@ define([
      *
      */
     JXG.createSector = function (board, parents, attributes) {
-        var el, attr,
+        var el, attr, i,
             type = 'invalid',
             s, v,
             attrPoints = ['center', 'radiusPoint', 'anglePoint'],
@@ -311,9 +310,14 @@ define([
             el.point3 = points[2];
 
             /* Add arc as child to defining points */
-            el.point1.addChild(el);
-            el.point2.addChild(el);
-            el.point3.addChild(el);
+            for (i = 0; i < 3; i++) {
+                if (Type.exists(points[i]._is_new)) {
+                    el.addChild(points[i]);
+                    delete points[i]._is_new;
+                } else {
+                    points[i].addChild(el);
+                }
+            }
 
             // useDirection is necessary for circumCircleSectors
             el.useDirection = attributes.usedirection;
@@ -751,7 +755,7 @@ define([
      * @constructor
      * @type Sector
      * @throws {Error} If the element cannot be constructed with the given parent objects an exception is thrown.
-     * First possiblity of input parameters are:
+     * First possibility of input parameters are:
      * @param {JXG.Point_JXG.Point_JXG.Point} p1,p2,p1 An angle is always drawn counterclockwise from <tt>p1</tt> to
      * <tt>p3</tt> around <tt>p2</tt>.
      *
@@ -1285,7 +1289,7 @@ define([
             d = Geometry.distance(vec, B, 3);
             vec = [vec[0], B[1] + (vec[1] - B[1]) * (r + dx) / d,  B[2] + (vec[2] - B[2]) * (r + dx) / d];
 
-            l_vp.position = Geometry.calcLabelQuadrant(Geometry.rad([1,0],[0,0],vec));
+            l_vp.position = Geometry.calcLabelQuadrant(Geometry.rad([1,0], [0,0], vec));
 
             return new Coords(Const.COORDS_BY_USER, vec, this.board);
         };
