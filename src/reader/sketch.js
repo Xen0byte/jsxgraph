@@ -46,14 +46,14 @@
  utils/type
  */
 
-(function () {
+(function() {
 
     'use strict';
 
     // this is a small workaround to adapt the SketchReader to our new file API
     // we don't have to change anything in sketchometry.
-    JXG.SketchReader = function (board, str) {
-        this.read = function () {
+    JXG.SketchReader = function(board, str) {
+        this.read = function() {
             var i, t, arr, unzipped, meta, constr;
 
             unzipped = new JXG.Util.Unzip(JXG.Util.Base64.decodeAsArray(str)).unzip();
@@ -102,11 +102,11 @@
 
     // No prototype here
     JXG.extend(JXG.SketchReader, /** @lends JXG.SketchReader */ {
-        generateJCodeMeta: function () {
+        generateJCodeMeta: function() {
             return ['', '', '', ''];
         },
 
-        id: function () {
+        id: function() {
             return JXG.Util.genUUID();
         },
 
@@ -130,7 +130,7 @@
          * @param {Array} step_log The complete step log
          * @returns {Array} JessieCode to set and reset the step.
          */
-        generateJCode: function (step, board, step_log) {
+        generateJCode: function(step, board, step_log) {
             var i, j, k, sub_id, str, str1, str2, objects, pid1, pid2, pid3,
                 xstart, ystart, el, arr, step2, options, assign, attrid,
                 le, x, y,
@@ -145,7 +145,7 @@
 
                 // print number -- helper to prepare numbers
                 // for printing, e.g. trim them with toFixed()
-                pn = function (v) {
+                pn = function(v) {
                     if (options.toFixed > 0) {
                         v = parseFloat(v);
                         return JXG.toFixed(v, options.toFixed);
@@ -154,7 +154,7 @@
                     return v;
                 },
 
-                getObject = function (v) {
+                getObject = function(v) {
                     var o;
 
                     if (options.useSymbols) {
@@ -1059,19 +1059,13 @@
 
                     set_str += assign + 'polygon(';
 
-                    for (i = 0; i < step.src_ids.length; i++) {
-                        set_str += step.src_ids[i];
-                        if (i < step.src_ids.length - 1) {
-                            set_str += ', ';
-                        }
-                    }
-
                     for (i = 0; i < 3; i++) {
-                        if (step.dest_sub_ids[i] !== 0) {
-                            if (step.src_ids.length > 0 || i > 0) {
-                                set_str += ', ';
-                            }
+                        if (JXG.exists(step.src_ids[i]))
+                            set_str += step.src_ids[i];
+                        else
                             set_str += step.dest_sub_ids[i];
+                        if (i < 3 - 1) {
+                            set_str += ', ';
                         }
                     }
 
@@ -1105,9 +1099,12 @@
 
                     set_str += assign + 'polygon(';
 
-                    for (i = 0; i < step.src_ids.length; i++) {
-                        set_str += step.src_ids[i];
-                        if (i < step.src_ids.length - 1) {
+                    for (i = 0; i < 4; i++) {
+                        if (JXG.exists(step.src_ids[i]))
+                            set_str += step.src_ids[i];
+                        else
+                            set_str += step.dest_sub_ids[i];
+                        if (i < 4 - 1) {
                             set_str += ', ';
                         }
                     }
@@ -1715,7 +1712,7 @@
             return [set_str, ctx_set_str, reset_str, ctx_reset_str];
         },
 
-        replaceStepDestIds: function (step, id_map) {
+        replaceStepDestIds: function(step, id_map) {
             var i, j, copy_ids = [];
 
             for (i = 0; i < id_map.length; i++) {
