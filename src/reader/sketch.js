@@ -1438,10 +1438,10 @@ Copyright 2008-2021
                     set_str += step.dest_sub_ids[1] + '\', name: \'\', priv: true>>, point1: <<id: \'';
                     set_str += step.dest_sub_ids[2] + '\', name: \'\', priv: false, frozen: true>>, point2: <<id: \'';
                     set_str += step.dest_sub_ids[3] + '\', name: \'\', priv: false, frozen: true>>, label: <<id: \'';
-                    set_str += step.dest_sub_ids[4] + '\', name: \'\', priv: true>>';
+                    set_str += step.dest_id + 'Label\', name: \'\', priv: true>>';
                     set_str += ', name: \'' + step.args.name + '\'>>; ';
 
-                    reset_str = 'remove(' + step.dest_id + '); remove(' + step.dest_sub_ids[4] + '); remove(';
+                    reset_str = 'remove(' + step.dest_id + '); remove(' + step.dest_id + 'Label); remove(';
                     reset_str += step.dest_sub_ids[3] + '); remove(' + step.dest_sub_ids[2] + '); remove(';
                     reset_str += step.dest_sub_ids[1] + '); remove(';
                     reset_str += step.dest_sub_ids[0] + '); ';
